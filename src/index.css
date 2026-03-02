@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --primary: #10b981;
+  --primary-dark: #064e3b;
+  --secondary: #34d399;
+  --primary-light: #d1fae5;
+  --primary-glow: rgba(16, 185, 129, 0.15);
+  --page-bg: #f0fdf4;
+  /* A very soft, elegant pale green */
+  --surface: #ffffff;
+  --surface-border: #dcfce7;
+  --text-primary: #064e3b;
+  /* Darkest green for primary text to ensure contrast */
+  --text-secondary: #047857;
+  /* Medium-dark green for secondary text */
+  --danger: #ef4444;
+  --success: #10b981;
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(226, 232, 240, 0.8);
+  --input-bg: #f1f5f9;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  background: var(--page-bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}

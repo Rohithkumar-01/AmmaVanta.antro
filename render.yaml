@@ -1,0 +1,25 @@
+services:
+  # Backend Web Service
+  - type: web
+    name: ammavanta-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: MONGODB_URI
+        sync: false # User will input this securely on Render Dashboard
+      - key: JWT_SECRET
+        generateValue: true
+
+  # Frontend Static Site
+  - type: web
+    name: ammavanta-frontend
+    env: static
+    plan: free
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false # Must be set to https://ammavanta-backend.onrender.com/api
