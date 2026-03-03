@@ -57,7 +57,13 @@ router.get('/seed', async (req, res) => {
 // GET all menu items clustered by category exactly like initial data 
 router.get('/', async (req, res) => {
     try {
-        const items = await MenuItem.find({});
+        let items = await MenuItem.find({});
+
+        // Auto-seed cloud database if empty on first load
+        if (items.length === 0) {
+            await MenuItem.insertMany(initialData);
+            items = await MenuItem.find({});
+        }
 
         // Convert flat array to grouped object
         const menuData = {
