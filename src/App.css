@@ -28,12 +28,19 @@
 }
 
 /* ================== Main Content & Sections ================== */
-.main-content {
-  flex: 1;
-  padding: 2rem;
+.home-layout {
+  display: flex;
+  gap: 2rem;
   max-width: 1400px;
   margin: 0 auto;
   width: 100%;
+  align-items: flex-start;
+}
+
+.main-content {
+  flex: 1;
+  padding: 2rem 0 2rem 2rem;
+  min-width: 0;
 }
 
 .menu-section {
@@ -75,8 +82,8 @@
   background: var(--surface);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-  transition: all 0.3s ease;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   scroll-snap-align: start;
   border: 1px solid var(--surface-border);
   display: flex;
@@ -91,15 +98,15 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
   pointer-events: none;
   z-index: 1;
 }
 
 .card:hover {
-  transform: translateY(-8px);
-  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
-  border-color: rgba(16, 185, 129, 0.4);
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.5);
 }
 
 .image-container {
@@ -208,25 +215,26 @@
 
 .order-section button {
   flex: 1;
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: #fff;
   border: none;
   border-radius: 12px;
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-family: inherit;
   cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.order-section button:hover {
-  background: var(--primary-dark);
-  transform: translateY(-2px);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 4px 15px var(--primary-glow);
 }
 
+.order-section button:hover {
+  background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+}
+
 .order-section button:active {
-  transform: translateY(1px);
+  transform: translateY(1px) scale(0.98);
 }
 
 .error-message {
@@ -288,9 +296,9 @@
 }
 
 .btn-primary {
-  background: var(--primary);
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
   color: #fff;
-  box-shadow: 0 4px 15px var(--primary-glow);
+  box-shadow: 0 6px 20px var(--primary-glow);
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -578,6 +586,231 @@
   color: var(--success);
 }
 
+/* ================== Cart Widget ================== */
+.cart-sidebar-container {
+  width: 420px;
+  position: sticky;
+  top: 2rem;
+  margin-top: 2rem;
+  padding-right: 2rem;
+  flex-shrink: 0;
+}
+
+.cart-widget {
+  background: var(--surface);
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--surface-border);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+}
+
+.cart-widget::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--primary), var(--secondary));
+}
+
+.cart-widget h3 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-bottom: 1.2rem;
+  text-align: center;
+}
+
+.empty-cart-icon {
+  font-size: 3rem;
+  text-align: center;
+  margin: 1rem 0;
+  opacity: 0.5;
+}
+
+.cart-items {
+  max-height: 250px;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  padding-right: 0.5rem;
+}
+
+.cart-items::-webkit-scrollbar {
+  width: 4px;
+}
+
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--surface-border);
+}
+
+.cart-item:last-child {
+  border-bottom: none;
+}
+
+.cart-item-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.cart-item-name {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1.05rem;
+  margin-bottom: 0.2rem;
+}
+
+.cart-item-price {
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.cart-item-qty-badge {
+  background: var(--primary-light);
+  color: var(--primary-dark);
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+/* ================== Receipt Slip Styles (Aesthetic Paper Bill) ================== */
+.receipt-slip-container {
+  position: relative;
+  margin-top: 1rem;
+  padding: 5px;
+  background: var(--surface-border);
+  border-radius: 4px;
+}
+
+.receipt-slip {
+  background: #fffdf0;
+  padding: 1.5rem;
+  border-radius: 2px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+  position: relative;
+  font-family: 'Courier New', Courier, monospace;
+  color: #333;
+}
+
+/* Add a jagged edge to the bottom to look like a torn receipt */
+.receipt-slip::after {
+  content: "";
+  position: absolute;
+  bottom: -6px;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background-size: 12px 12px;
+  background-image: linear-gradient(135deg, #fffdf0 25%, transparent 25%), linear-gradient(225deg, #fffdf0 25%, transparent 25%);
+  background-position: 0 0;
+}
+
+.receipt-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.receipt-header h4 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-bottom: 0.2rem;
+  color: #111;
+}
+
+.receipt-header p {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.dashed-line {
+  border-top: 2px dashed #ccc;
+  margin: 1rem 0;
+}
+
+.receipt-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.6rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.receipt-item-name {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 1rem;
+}
+
+.receipt-grand-total {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #000;
+  margin-top: 0.5rem;
+}
+
+.receipt-thank-you-section {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding-top: 1.2rem;
+  border-top: 1px dashed rgba(0, 0, 0, 0.1);
+}
+
+.receipt-thank-you {
+  font-size: 1rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: #222;
+  letter-spacing: 0.5px;
+}
+
+.receipt-contact {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.receipt-contact br {
+  margin-bottom: 0.2rem;
+}
+
+.cart-widget.empty {
+  text-align: center;
+  color: var(--text-secondary);
+  padding: 3rem 1.5rem;
+}
+
+.cart-widget.empty p {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+}
+
+@media (max-width: 992px) {
+  .home-layout {
+    flex-direction: column;
+  }
+
+  .cart-sidebar-container {
+    width: 100%;
+    position: static;
+    padding: 0 2rem 2rem 2rem;
+    margin-top: 0;
+  }
+}
+
 @media (max-width: 768px) {
   .hero-header .main-brand-title {
     font-size: 3rem;
@@ -594,5 +827,116 @@
 
   .auth-box {
     padding: 2rem;
+  }
+}
+
+/* ================== Checkout Page ================== */
+.checkout-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1rem;
+  background: var(--page-bg);
+}
+
+.checkout-container {
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.checkout-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.checkout-header h2 {
+  font-size: 2.5rem;
+  color: var(--primary-dark);
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+}
+
+.checkout-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.receipt-slip.large-receipt {
+  padding: 3rem 2.5rem;
+  min-width: 380px;
+  font-size: 1.1rem;
+}
+
+.receipt-slip.large-receipt .receipt-header h4 {
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+}
+
+.receipt-slip.large-receipt .receipt-row {
+  margin-bottom: 0.8rem;
+  font-size: 1.1rem;
+}
+
+.receipt-slip.large-receipt .receipt-grand-total {
+  font-size: 1.6rem;
+  margin-top: 1rem;
+}
+
+.checkout-actions {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 3rem;
+  width: 100%;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Print CSS */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  body {
+    background: white;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .receipt-slip-container {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0;
+    margin: 0;
+  }
+
+  .receipt-slip {
+    box-shadow: none !important;
+    background: white !important;
+    border: 1px solid #ccc;
+  }
+
+  .receipt-slip::after {
+    display: none;
   }
 }

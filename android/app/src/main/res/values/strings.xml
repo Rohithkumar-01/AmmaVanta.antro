@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">AmmaVanta</string>
+    <string name="title_activity_main">AmmaVanta</string>
+    <string name="package_name">com.ammavanta.restaurant</string>
+    <string name="custom_url_scheme">com.ammavanta.restaurant</string>
+</resources>

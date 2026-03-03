@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext, useContext } from 'react';
-import { Routes, Route, useNavigate, Link, Navigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Link, Navigate, useLocation } from 'react-router-dom';
 import './App.css';
 
 // ======================== Mock API & Database =========================
@@ -125,7 +125,7 @@ const initialData = {
 
 // ======================== Components =========================
 
-function Card({ item }) {
+function Card({ item, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -144,6 +144,7 @@ function Card({ item }) {
     } else {
       setError("");
       setSuccess(true);
+      if (onAddToCart) onAddToCart(item, qty);
       setTimeout(() => setSuccess(false), 3000);
     }
   };
@@ -180,14 +181,14 @@ function Card({ item }) {
   );
 }
 
-function Section({ title, items }) {
+function Section({ title, items, onAddToCart }) {
   if (!items || items.length === 0) return null;
   return (
     <section className="menu-section">
       <h2 className="section-title">{title}</h2>
       <div className="items-row">
         {items.map(item => (
-          <Card key={item.id} item={item} />
+          <Card key={item.id} item={item} onAddToCart={onAddToCart} />
         ))}
       </div>
     </section>
@@ -195,6 +196,163 @@ function Section({ title, items }) {
 }
 
 // ======================== Protected Routes =========================
+
+function Cart({ cartItems }) {
+  const navigate = useNavigate();
+  const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
+  const gst = totalPrice * 0.05;
+  const grandTotal = totalPrice + gst;
+
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-widget empty">
+        <h3>Your Order</h3>
+        <div className="empty-cart-icon">🍽️</div>
+        <p>Your plate is empty. Add some delicious items!</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="cart-widget">
+      <h3>Your Items ({totalQuantity})</h3>
+      <div className="cart-items">
+        {cartItems.map((item, index) => (
+          <div key={index} className="cart-item">
+            <div className="cart-item-info">
+              <span className="cart-item-name">{item.name}</span>
+              <span className="cart-item-price">₹{item.price} x {item.quantity}</span>
+            </div>
+            <div className="cart-item-qty-badge">₹{item.price * item.quantity}</div>
+          </div>
+        ))}
+      </div>
+
+      <div className="receipt-slip-container">
+        <div className="receipt-slip">
+          <div className="receipt-header">
+            <h4>AmmaVanta</h4>
+            <p>Order Receipt</p>
+            <div className="dashed-line"></div>
+          </div>
+
+          <div className="receipt-body">
+            {cartItems.map((item, idx) => (
+              <div key={idx} className="receipt-row">
+                <span className="receipt-item-name">{item.quantity}x {item.name}</span>
+                <span className="receipt-item-price">₹{item.price * item.quantity}</span>
+              </div>
+            ))}
+          </div>
+
+          <div className="dashed-line"></div>
+
+          <div className="receipt-footer">
+            <div className="receipt-row">
+              <span>Subtotal</span>
+              <span>₹{totalPrice.toFixed(2)}</span>
+            </div>
+            <div className="receipt-row">
+              <span>GST (5%)</span>
+              <span>₹{gst.toFixed(2)}</span>
+            </div>
+            <div className="dashed-line"></div>
+            <div className="receipt-row receipt-grand-total">
+              <span>Grand Total</span>
+              <span>₹{grandTotal.toFixed(2)}</span>
+            </div>
+            <div className="receipt-thank-you-section">
+              <p className="receipt-thank-you">Thank you, visit again!</p>
+              <p className="receipt-contact">For any suggestions:<br />rohithkumarchitluru@gmail.com</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button className="btn btn-primary full-width mt-4" onClick={() => navigate('/checkout', { state: { cartItems, totalQuantity, totalPrice, gst, grandTotal } })}>
+        Place Order • ₹{grandTotal.toFixed(2)}
+      </button>
+    </div>
+  );
+}
+
+function CheckoutBill() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const state = location.state || {};
+  const { cartItems, totalQuantity, totalPrice, gst, grandTotal } = state;
+
+  if (!cartItems || cartItems.length === 0) {
+    return <Navigate to="/" replace />;
+  }
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  return (
+    <div className="checkout-page page-fade-in">
+      <div className="checkout-container">
+        <header className="checkout-header no-print">
+          <h2>Order Successfully Placed!</h2>
+          <p>Thank you for choosing AmmaVanta. Here is your official bill.</p>
+        </header>
+
+        <div className="receipt-slip-container print-area">
+          <div className="receipt-slip large-receipt">
+            <div className="receipt-header">
+              <h4>AmmaVanta</h4>
+              <p>Official Order Bill</p>
+              <p>{new Date().toLocaleString()}</p>
+              <div className="dashed-line"></div>
+            </div>
+
+            <div className="receipt-body">
+              {cartItems.map((item, idx) => (
+                <div key={idx} className="receipt-row">
+                  <span className="receipt-item-name">{item.quantity}x {item.name}</span>
+                  <span className="receipt-item-price">₹{item.price * item.quantity}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="dashed-line"></div>
+
+            <div className="receipt-footer">
+              <div className="receipt-row">
+                <span>Total Items</span>
+                <span>{totalQuantity}</span>
+              </div>
+              <div className="receipt-row">
+                <span>Subtotal</span>
+                <span>₹{totalPrice.toFixed(2)}</span>
+              </div>
+              <div className="receipt-row">
+                <span>GST (5%)</span>
+                <span>₹{gst.toFixed(2)}</span>
+              </div>
+              <div className="dashed-line"></div>
+              <div className="receipt-row receipt-grand-total">
+                <span>Grand Total</span>
+                <span>₹{grandTotal.toFixed(2)}</span>
+              </div>
+              <div className="receipt-thank-you-section">
+                <p className="receipt-thank-you">Thank you, visit again!</p>
+                <p className="receipt-contact">For any suggestions:<br />rohithkumarchitluru@gmail.com</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="checkout-actions no-print">
+          <button className="btn btn-primary" onClick={handlePrint}>Download / Print Bill</button>
+          <button className="btn btn-outline" onClick={() => navigate('/')}>Return to Menu</button>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Require any logged in user
 function ProtectedRoute({ children }) {
@@ -220,11 +378,22 @@ function AdminRoute({ children }) {
 function Home({ menuData }) {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
+  const [cartItems, setCartItems] = useState([]);
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('active_user');
     navigate('/login');
+  };
+
+  const handleAddToCart = (item, quantity) => {
+    setCartItems(prev => {
+      const existing = prev.find(i => i.id === item.id);
+      if (existing) {
+        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i);
+      }
+      return [...prev, { ...item, quantity }];
+    });
   };
 
   return (
@@ -244,12 +413,18 @@ function Home({ menuData }) {
         )}
       </header>
 
-      <main className="main-content">
-        <Section title="Breakfast & Tiffins" items={menuData.tiffins} />
-        <Section title="Hearty Meals" items={menuData.meals} />
-        <Section title="Appetizing Starters" items={menuData.starters} />
-        <Section title="Cool Drinks & Sweets" items={menuData.sweetDrinks} />
-      </main>
+      <div className="home-layout">
+        <main className="main-content">
+          <Section title="Breakfast & Tiffins" items={menuData.tiffins} onAddToCart={handleAddToCart} />
+          <Section title="Hearty Meals" items={menuData.meals} onAddToCart={handleAddToCart} />
+          <Section title="Appetizing Starters" items={menuData.starters} onAddToCart={handleAddToCart} />
+          <Section title="Cool Drinks & Sweets" items={menuData.sweetDrinks} onAddToCart={handleAddToCart} />
+        </main>
+
+        <aside className="cart-sidebar-container">
+          <Cart cartItems={cartItems} />
+        </aside>
+      </div>
 
       <footer className="footer">
         <p>© 2026 AmmaVanta. All rights reserved.</p>
@@ -729,6 +904,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home menuData={menuData} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutBill />
               </ProtectedRoute>
             }
           />
