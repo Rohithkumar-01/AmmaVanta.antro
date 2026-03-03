@@ -20,6 +20,10 @@ app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Main Root endpoint checks if API responds
+app.get('/', (req, res) => {
+    res.json({ success: true, message: "Welcome to AmmaVanta Root!" });
+});
+
 app.get('/api', (req, res) => {
     res.json({ success: true, message: "Welcome to AmmaVanta Backend API!" });
 });
