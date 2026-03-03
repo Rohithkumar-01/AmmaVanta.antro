@@ -12,14 +12,7 @@ services:
         sync: false # User will input this securely on Render Dashboard
       - key: JWT_SECRET
         generateValue: true
-
-  # Frontend Static Site
-  - type: web
-    name: ammavanta-frontend
-    env: static
-    plan: free
-    buildCommand: npm install && npm run build
-    staticPublishPath: dist
-    envVars:
-      - key: VITE_API_URL
-        sync: false # Must be set to https://ammavanta-backend.onrender.com/api
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5050
