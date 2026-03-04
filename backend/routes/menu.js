@@ -80,23 +80,9 @@ router.get('/', async (req, res) => {
 });
 
 const multer = require('multer');
-const path = require('path');
-const fs = require('fs');
 
-// Ensure uploads dir exists
-const uploadsDir = path.join(__dirname, '../uploads');
-if (!fs.existsSync(uploadsDir)) {
-    fs.mkdirSync(uploadsDir);
-}
-
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, uploadsDir)
-    },
-    filename: function (req, file, cb) {
-        cb(null, 'item-' + Date.now() + path.extname(file.originalname))
-    }
-});
+// Store in memory instead of disk for serverless/ephemeral environments
+const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 // POST a new menu item
@@ -105,9 +91,11 @@ router.post('/', upload.single('imageFile'), async (req, res) => {
     try {
         let finalImage = img;
 
-        // If a file was uploaded by the user from file explorer, construct its public URL
+        // If a file was uploaded by the user from file explorer, convert to Base64
+        // This solves the ephemeral filesystem issue on platforms like Render where local uploads get deleted on restart
         if (req.file) {
-            finalImage = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            const base64Image = req.file.buffer.toString('base64');
+            finalImage = `data:${req.file.mimetype};base64,${base64Image}`;
         }
 
         if (!category || !name || !price || !finalImage) {
