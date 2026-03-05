@@ -99,6 +99,20 @@
   margin: -1rem;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  /* Ensures smooth scrolling on iOS and Android */
+}
+
+/* Hide scrollbar for items-row on smaller screens to make it feel like a mobile app */
+@media (max-width: 768px) {
+  .items-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .items-row {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
 /* ================== Food Cards (Glassmorphism Dark) ================== */
