@@ -456,25 +456,14 @@ function AdminRoute({ children }) {
 
 // ======================== Pages =========================
 
-function Home({ menuData }) {
+function Home({ menuData, cartItems, onAddToCart }) {
   const { user, setUser } = useAuth();
   const navigate = useNavigate();
-  const [cartItems, setCartItems] = useState([]);
 
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('active_user');
     navigate('/login');
-  };
-
-  const handleAddToCart = (item, quantity) => {
-    setCartItems(prev => {
-      const existing = prev.find(i => i.id === item.id);
-      if (existing) {
-        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i);
-      }
-      return [...prev, { ...item, quantity }];
-    });
   };
 
   return (
@@ -494,17 +483,26 @@ function Home({ menuData }) {
         )}
       </header>
 
+      {/* Floating Cart Button */}
+      {cartItems.length > 0 && (
+        <div style={{ position: 'fixed', bottom: '2.5rem', right: '2.5rem', zIndex: 1000 }}>
+          <button
+            className="btn btn-primary"
+            style={{ padding: '1.2rem 2.5rem', fontSize: '1.2rem', borderRadius: '40px', boxShadow: '0 10px 40px rgba(0,0,0,0.6)', border: '2px solid rgba(245, 158, 11, 0.4)' }}
+            onClick={() => navigate('/cart')}
+          >
+            🛒 View Cart ({cartItems.reduce((acc, item) => acc + item.quantity, 0)})
+          </button>
+        </div>
+      )}
+
       <div className="home-layout">
         <main className="main-content">
-          <Section title="Breakfast & Tiffins" items={menuData.tiffins} onAddToCart={handleAddToCart} />
-          <Section title="Hearty Meals" items={menuData.meals} onAddToCart={handleAddToCart} />
-          <Section title="Appetizing Starters" items={menuData.starters} onAddToCart={handleAddToCart} />
-          <Section title="Cool Drinks & Sweets" items={menuData.sweetDrinks} onAddToCart={handleAddToCart} />
+          <Section title="Breakfast & Tiffins" items={menuData.tiffins} onAddToCart={onAddToCart} />
+          <Section title="Hearty Meals" items={menuData.meals} onAddToCart={onAddToCart} />
+          <Section title="Appetizing Starters" items={menuData.starters} onAddToCart={onAddToCart} />
+          <Section title="Cool Drinks & Sweets" items={menuData.sweetDrinks} onAddToCart={onAddToCart} />
         </main>
-
-        <aside className="cart-sidebar-container">
-          <Cart cartItems={cartItems} />
-        </aside>
       </div>
 
       <footer className="footer">
@@ -984,12 +982,39 @@ function AdminPanel({ menuData, setMenuData }) {
 
 // ======================== Main App =========================
 
+function CartPage({ cartItems }) {
+  const navigate = useNavigate();
+  return (
+    <div className="page-fade-in" style={{ padding: '3rem 1rem', background: 'var(--page-bg)', minHeight: '100vh' }}>
+      <header className="hero-header" style={{ padding: '1rem 1rem 3rem 1rem', marginBottom: '1rem' }}>
+        <h1 className="main-brand-title" style={{ fontSize: '3rem' }}>Your Basket</h1>
+        <button className="btn btn-outline" onClick={() => navigate('/')} style={{ marginTop: '1.5rem' }}>← Back to Menu</button>
+      </header>
+      <div style={{ maxWidth: '600px', margin: '0 auto' }}>
+        <Cart cartItems={cartItems} />
+      </div>
+    </div>
+  );
+}
+
 function App() {
   const [menuData, setMenuData] = useState(initialData);
   const [user, setUser] = useState(() => {
     const saved = localStorage.getItem('active_user');
     return saved ? JSON.parse(saved) : null;
   });
+
+  const [cartItems, setCartItems] = useState([]);
+
+  const handleAddToCart = (item, quantity) => {
+    setCartItems(prev => {
+      const existing = prev.find(i => i.id === item.id);
+      if (existing) {
+        return prev.map(i => i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i);
+      }
+      return [...prev, { ...item, quantity }];
+    });
+  };
 
   // Fetch menu from database on load
   useEffect(() => {
@@ -1019,7 +1044,15 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Home menuData={menuData} />
+                <Home menuData={menuData} cartItems={cartItems} onAddToCart={handleAddToCart} />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/cart"
+            element={
+              <ProtectedRoute>
+                <CartPage cartItems={cartItems} />
               </ProtectedRoute>
             }
           />
