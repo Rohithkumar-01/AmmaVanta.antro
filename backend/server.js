@@ -7,6 +7,7 @@ const dotenv = require('dotenv');
 // Routes
 const authRoutes = require('./routes/auth');
 const menuRoutes = require('./routes/menu');
+const aiRoutes = require('./routes/ai');
 
 dotenv.config();
 
@@ -30,6 +31,7 @@ app.get('/api', (req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/menu', menuRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Global Error Handler to ensure JSON responses
 app.use((err, req, res, next) => {

@@ -86,6 +86,17 @@ const apiClient = {
     return data.item;
   },
 
+  generateItemInfo: async (name, category) => {
+    const res = await fetch(`${API_URL}/ai/generate-info`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, category })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Failed to generate info');
+    return data.data;
+  },
+
   deleteMenuItem: async (id) => {
     const res = await fetch(`${API_URL}/menu/${id}`, {
       method: 'DELETE'
@@ -805,9 +816,37 @@ function AdminPanel({ menuData, setMenuData }) {
     price: '',
     rating: '5.0',
     img: '',
-    imgFile: null
+    imgFile: null,
+    prepTime: '',
+    ingredients: '',
+    preparation: ''
   });
   const [message, setMessage] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleGenerateAI = async () => {
+    if (!newItem.name.trim()) {
+      setMessage("Please enter an Item Name first to generate AI details.");
+      return;
+    }
+    setIsGenerating(true);
+    setMessage("✨ AI is analyzing and generating detailed culinary info...");
+    try {
+      const generated = await apiClient.generateItemInfo(newItem.name, category);
+      setNewItem(prev => ({
+        ...prev,
+        prepTime: generated.prepTime || prev.prepTime,
+        ingredients: generated.ingredients || prev.ingredients,
+        preparation: generated.preparation || prev.preparation
+      }));
+      setMessage("✨ AI details generated successfully! Review before saving.");
+      setTimeout(() => setMessage(''), 4000);
+    } catch (err) {
+      setMessage(`AI Error: ${err.message}`);
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleAddItem = async (e) => {
     e.preventDefault();
@@ -843,6 +882,9 @@ function AdminPanel({ menuData, setMenuData }) {
     formData.append('name', newItem.name.trim());
     formData.append('price', price);
     formData.append('rating', rating);
+    formData.append('prepTime', newItem.prepTime);
+    formData.append('ingredients', newItem.ingredients);
+    formData.append('preparation', newItem.preparation);
 
     if (newItem.imgFile) {
       formData.append('imageFile', newItem.imgFile);
@@ -860,7 +902,7 @@ function AdminPanel({ menuData, setMenuData }) {
       }));
 
       setMessage("Item added successfully to database!");
-      setNewItem({ name: '', price: '', rating: '5.0', img: '', imgFile: null });
+      setNewItem({ name: '', price: '', rating: '5.0', img: '', imgFile: null, prepTime: '', ingredients: '', preparation: '' });
       setTimeout(() => setMessage(''), 3000);
     } catch (err) {
       setMessage(`Error: ${err.message}`);
@@ -944,6 +986,49 @@ function AdminPanel({ menuData, setMenuData }) {
                   value={newItem.price}
                   onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
                   placeholder="e.g. 45"
+                />
+              </div>
+            </div>
+
+            <div className="input-row" style={{ alignItems: 'flex-end', background: 'rgba(245, 158, 11, 0.05)', padding: '1.5rem', borderRadius: '12px', border: '1px dashed rgba(245, 158, 11, 0.4)', margin: '1.5rem 0' }}>
+              <div style={{ flex: 1, paddingRight: '1rem' }}>
+                <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>✨ AI Culinary Generator</h4>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0', lineHeight: 1.4 }}>Enter the Item Name above, then click generate to automatically write professional culinary details, ingredients, and prep times for the menu card!</p>
+              </div>
+              <button type="button" onClick={handleGenerateAI} className="btn btn-outline" disabled={isGenerating} style={{ borderColor: 'var(--primary)', color: 'var(--primary)', background: 'rgba(245, 158, 11, 0.1)', flexShrink: 0 }}>
+                {isGenerating ? "Analyzing & Writing..." : "✨ Auto-Fill Details"}
+              </button>
+            </div>
+
+            <div className="input-row">
+              <div className="input-group">
+                <label>Prep Time</label>
+                <input
+                  type="text"
+                  value={newItem.prepTime}
+                  onChange={(e) => setNewItem({ ...newItem, prepTime: e.target.value })}
+                  placeholder="e.g. 15 - 20 minutes"
+                />
+              </div>
+              <div className="input-group flex-2">
+                <label>Ingredients</label>
+                <input
+                  type="text"
+                  value={newItem.ingredients}
+                  onChange={(e) => setNewItem({ ...newItem, ingredients: e.target.value })}
+                  placeholder="e.g. Basmati rice, premium spices..."
+                />
+              </div>
+            </div>
+
+            <div className="input-row">
+              <div className="input-group" style={{ flex: 1 }}>
+                <label>Preparation Method (Card Back Description)</label>
+                <textarea
+                  value={newItem.preparation}
+                  onChange={(e) => setNewItem({ ...newItem, preparation: e.target.value })}
+                  placeholder="e.g. Slow cooked to perfection..."
+                  style={{ width: '100%', padding: '0.8rem', borderRadius: '14px', background: 'var(--input-bg)', border: '1px solid var(--surface-border)', color: 'var(--text-primary)', minHeight: '80px', fontFamily: 'inherit' }}
                 />
               </div>
             </div>
