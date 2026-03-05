@@ -86,11 +86,11 @@ const apiClient = {
     return data.item;
   },
 
-  generateItemInfo: async (name, category) => {
+  generateItemInfo: async (name, category, complexity = 'basic') => {
     const res = await fetch(`${API_URL}/ai/generate-info`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, category })
+      body: JSON.stringify({ name, category, complexity })
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.message || 'Failed to generate info');
@@ -191,7 +191,7 @@ function Card({ item, onAddToCart }) {
         {/* Front of Card */}
         <div className="card-front">
           <div className="image-container" onClick={() => setIsFlipped(true)} style={{ cursor: 'pointer' }}>
-            <div className="flip-hint">Tap for info</div>
+            <div className="info-dot"></div>
             <img src={item.img} alt={item.name} />
             <span className="rating">⭐ {item.rating}</span>
           </div>
@@ -517,6 +517,10 @@ function Home({ menuData, cartItems, onAddToCart }) {
       <header className="hero-header">
         <h1 className="main-brand-title">AmmaVanta</h1>
         <p>Authentic & Delicious Pure Veg Cuisine</p>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', marginTop: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+          <span style={{ display: 'inline-block', width: '10px', height: '10px', background: '#000', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.6)' }} ></span>
+          Click the black dot on any image to view preparation & ingredient details.
+        </p>
 
         {user && (
           <div style={{ marginTop: '1rem', display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}>
@@ -831,6 +835,7 @@ function AdminPanel({ menuData, setMenuData }) {
   });
   const [message, setMessage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [complexity, setComplexity] = useState('basic');
 
   const handleGenerateAI = async () => {
     if (!newItem.name.trim()) {
@@ -840,7 +845,7 @@ function AdminPanel({ menuData, setMenuData }) {
     setIsGenerating(true);
     setMessage("✨ AI is analyzing and generating detailed culinary info...");
     try {
-      const generated = await apiClient.generateItemInfo(newItem.name, category);
+      const generated = await apiClient.generateItemInfo(newItem.name, category, complexity);
       setNewItem(prev => ({
         ...prev,
         prepTime: generated.prepTime || prev.prepTime,
@@ -998,12 +1003,24 @@ function AdminPanel({ menuData, setMenuData }) {
               </div>
             </div>
 
-            <div className="input-row" style={{ alignItems: 'flex-end', background: 'rgba(245, 158, 11, 0.05)', padding: '1.5rem', borderRadius: '12px', border: '1px dashed rgba(245, 158, 11, 0.4)', margin: '1.5rem 0' }}>
-              <div style={{ flex: 1, paddingRight: '1rem' }}>
+            <div className="input-row" style={{ alignItems: 'flex-start', background: 'rgba(245, 158, 11, 0.05)', padding: '1.5rem', borderRadius: '12px', border: '1px dashed rgba(245, 158, 11, 0.4)', margin: '1.5rem 0', flexWrap: 'wrap' }}>
+              <div style={{ flex: 1, paddingRight: '1rem', minWidth: '250px' }}>
                 <h4 style={{ color: 'var(--primary)', marginBottom: '0.5rem', fontSize: '1.1rem' }}>✨ AI Culinary Generator</h4>
-                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '0', lineHeight: 1.4 }}>Enter the Item Name above, then click generate to automatically write professional culinary details, ingredients, and prep times for the menu card!</p>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '1rem', lineHeight: 1.4 }}>Enter the Item Name above, select language level, then click generate!</p>
+
+                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+                    <input type="radio" name="complexity" value="basic" checked={complexity === 'basic'} onChange={() => setComplexity('basic')} /> Basic
+                  </label>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+                    <input type="radio" name="complexity" value="intermediate" checked={complexity === 'intermediate'} onChange={() => setComplexity('intermediate')} /> Intermediate
+                  </label>
+                  <label style={{ fontSize: '0.85rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.3rem', cursor: 'pointer' }}>
+                    <input type="radio" name="complexity" value="advanced" checked={complexity === 'advanced'} onChange={() => setComplexity('advanced')} /> Advanced
+                  </label>
+                </div>
               </div>
-              <button type="button" onClick={handleGenerateAI} className="btn btn-outline" disabled={isGenerating} style={{ borderColor: 'var(--primary)', color: 'var(--primary)', background: 'rgba(245, 158, 11, 0.1)', flexShrink: 0 }}>
+              <button type="button" onClick={handleGenerateAI} className="btn btn-outline" disabled={isGenerating} style={{ borderColor: 'var(--primary)', color: 'var(--primary)', background: 'rgba(245, 158, 11, 0.1)', marginTop: '0.5rem' }}>
                 {isGenerating ? "Analyzing & Writing..." : "✨ Auto-Fill Details"}
               </button>
             </div>
