@@ -73,6 +73,26 @@ const apiClient = {
     const data = await res.json();
     if (!data.success) throw new Error(data.message || 'Failed to add item');
     return data.item;
+  },
+
+  updateMenuItem: async (id, price) => {
+    const res = await fetch(`${API_URL}/menu/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ price })
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Failed to update item');
+    return data.item;
+  },
+
+  deleteMenuItem: async (id) => {
+    const res = await fetch(`${API_URL}/menu/${id}`, {
+      method: 'DELETE'
+    });
+    const data = await res.json();
+    if (!data.success) throw new Error(data.message || 'Failed to delete item');
+    return data;
   }
 };
 
@@ -192,6 +212,53 @@ function Section({ title, items, onAddToCart }) {
         ))}
       </div>
     </section>
+  );
+}
+
+function AdminCard({ item, category, onUpdate, onDelete }) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [newPrice, setNewPrice] = useState(item.price);
+
+  const handleUpdate = () => {
+    if (newPrice && !isNaN(Number(newPrice)) && Number(newPrice) > 0) {
+      onUpdate(item.id, category, Number(newPrice));
+      setIsEditing(false);
+    }
+  };
+
+  return (
+    <div className="card admin-item-card">
+      <div className="image-container">
+        <img src={item.img} alt={item.name} />
+        <span className="rating">⭐ {item.rating}</span>
+      </div>
+      <div className="card-info">
+        <h3>{item.name}</h3>
+        {isEditing ? (
+          <div className="edit-price-section" style={{ display: 'flex', gap: '5px', alignItems: 'center', marginBottom: '10px' }}>
+            <span style={{ fontWeight: 'bold' }}>₹</span>
+            <input
+              type="number"
+              value={newPrice}
+              onChange={(e) => setNewPrice(e.target.value)}
+              placeholder="Price"
+              style={{ width: '70px', padding: '0.2rem' }}
+            />
+            <button onClick={handleUpdate} className="btn btn-primary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>Save</button>
+            <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>X</button>
+          </div>
+        ) : (
+          <p className="price">₹{item.price}</p>
+        )}
+
+        {!isEditing && (
+          <div className="admin-card-actions" style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
+            <button onClick={() => setIsEditing(true)} className="btn btn-outline" style={{ flex: 1, padding: '0.4rem', fontSize: '0.8rem' }}>Edit Price</button>
+            <button onClick={() => onDelete(item.id, category)} className="btn btn-danger" style={{ flex: 1, padding: '0.4rem', fontSize: '0.8rem', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>Delete</button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -761,6 +828,35 @@ function AdminPanel({ menuData, setMenuData }) {
     }
   };
 
+  const handleUpdatePrice = async (itemId, categoryName, newPrice) => {
+    try {
+      await apiClient.updateMenuItem(itemId, newPrice);
+      setMenuData(prev => ({
+        ...prev,
+        [categoryName]: prev[categoryName].map(item => item.id === itemId ? { ...item, price: newPrice } : item)
+      }));
+      setMessage("Price updated successfully!");
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setMessage(`Error updating price: ${err.message}`);
+    }
+  };
+
+  const handleDeleteItem = async (itemId, categoryName) => {
+    if (!window.confirm("Are you sure you want to delete this item?")) return;
+    try {
+      await apiClient.deleteMenuItem(itemId);
+      setMenuData(prev => ({
+        ...prev,
+        [categoryName]: prev[categoryName].filter(item => item.id !== itemId)
+      }));
+      setMessage("Item deleted successfully!");
+      setTimeout(() => setMessage(''), 3000);
+    } catch (err) {
+      setMessage(`Error deleting item: ${err.message}`);
+    }
+  };
+
   return (
     <div className="admin-container page-fade-in">
       <header className="hero-header" style={{ padding: '2rem 1rem', marginBottom: '0' }}>
@@ -857,7 +953,13 @@ function AdminPanel({ menuData, setMenuData }) {
           <h3>Live Menu Preview - {category.toUpperCase()} ({menuData[category].length} items)</h3>
           <div className="items-row preview-row">
             {menuData[category].map(item => (
-              <Card key={item.id} item={item} />
+              <AdminCard
+                key={item.id}
+                item={item}
+                category={category}
+                onUpdate={handleUpdatePrice}
+                onDelete={handleDeleteItem}
+              />
             ))}
           </div>
         </div>

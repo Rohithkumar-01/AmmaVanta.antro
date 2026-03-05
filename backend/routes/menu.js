@@ -119,4 +119,41 @@ router.post('/', upload.single('imageFile'), async (req, res) => {
     }
 });
 
+// PUT update a menu item price
+router.put('/:id', async (req, res) => {
+    try {
+        const { price } = req.body;
+        if (!price || isNaN(Number(price))) {
+            return res.status(400).json({ success: false, message: "Valid price is required" });
+        }
+
+        const updatedItem = await MenuItem.findOneAndUpdate(
+            { id: req.params.id },
+            { $set: { price: Number(price) } },
+            { new: true }
+        );
+
+        if (!updatedItem) {
+            return res.status(404).json({ success: false, message: "Item not found" });
+        }
+
+        res.json({ success: true, message: "Price updated successfully", item: updatedItem });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// DELETE a menu item
+router.delete('/:id', async (req, res) => {
+    try {
+        const deletedItem = await MenuItem.findOneAndDelete({ id: req.params.id });
+        if (!deletedItem) {
+            return res.status(404).json({ success: false, message: "Item not found" });
+        }
+        res.json({ success: true, message: "Item deleted successfully" });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
 module.exports = router;
