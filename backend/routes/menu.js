@@ -6,37 +6,124 @@ const MenuItem = require('../models/MenuItem');
 // Data seeding array
 const initialData = [
     // Tiffins
-    { category: 'tiffins', name: 'Masala Dosa', price: 60, rating: 4.8, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80' },
-    { category: 'tiffins', name: 'Idli Sambar', price: 40, rating: 4.6, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80' },
-    { category: 'tiffins', name: 'Vada', price: 35, rating: 4.5, img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80' },
-    { category: 'tiffins', name: 'Puri Bhaji', price: 50, rating: 4.4, img: 'https://images.unsplash.com/photo-1626200419109-31f8ae7480a4?auto=format&fit=crop&w=400&q=80' },
-    { category: 'tiffins', name: 'Upma', price: 35, rating: 4.2, img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80' },
-    { category: 'tiffins', name: 'Uttapam', price: 55, rating: 4.7, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80' },
-    { category: 'tiffins', name: 'Poha', price: 30, rating: 4.3, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=400&q=80' },
+    {
+        category: 'tiffins', name: 'Masala Dosa', price: 60, rating: 4.8, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80',
+        prepTime: "10 - 15 minutes", ingredients: "Fermented rice & lentil batter, spiced potato filling, ghee, mustard seeds.", preparation: "Crispy crepe wrapped around a hot, savory spiced potato mash. Served with fresh coconut chutney and hot sambar."
+    },
+    {
+        category: 'tiffins', name: 'Idli Sambar', price: 40, rating: 4.6, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 - 10 minutes", ingredients: "Steamed rice & urad dal cakes, lentil stew, mixed vegetables, tamarind.", preparation: "Soft, fluffy steamed cakes served alongside a tangy and spicy lentil-vegetable stew."
+    },
+    {
+        category: 'tiffins', name: 'Vada', price: 35, rating: 4.5, img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80',
+        prepTime: "10 - 15 minutes", ingredients: "Urad dal paste, green chilies, curry leaves, ginger, black pepper.", preparation: "Deep-fried savory doughnut-shaped fritters, crispy on the outside and soft inside."
+    },
+    {
+        category: 'tiffins', name: 'Puri Bhaji', price: 50, rating: 4.4, img: 'https://images.unsplash.com/photo-1626200419109-31f8ae7480a4?auto=format&fit=crop&w=400&q=80',
+        prepTime: "10 - 15 minutes", ingredients: "Whole wheat dough, boiled potatoes, tomatoes, turmeric, green chilies.", preparation: "Deep-fried puffed bread served with a flavorful, rich, and mildly spiced potato curry."
+    },
+    {
+        category: 'tiffins', name: 'Upma', price: 35, rating: 4.2, img: 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80',
+        prepTime: "10 - 12 minutes", ingredients: "Roasted semolina, onions, green peas, mustard seeds, curry leaves.", preparation: "Dry-roasted semolina cooked into a savory, thick porridge tempered with aromatic spices."
+    },
+    {
+        category: 'tiffins', name: 'Uttapam', price: 55, rating: 4.7, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80',
+        prepTime: "12 - 15 minutes", ingredients: "Thick fermented batter, finely chopped tomatoes, onions, cilantro, green chilies.", preparation: "A thick, soft pancake-like dosa loaded with fresh, crunchy toppings roasted to perfection."
+    },
+    {
+        category: 'tiffins', name: 'Poha', price: 30, rating: 4.3, img: 'https://images.unsplash.com/photo-1604908176997-125f25cc6f3d?auto=format&fit=crop&w=400&q=80',
+        prepTime: "8 - 10 minutes", ingredients: "Flattened rice flakes, peanuts, onions, turmeric, fresh coriander.", preparation: "Light and healthy flattened rice stir-fried with turmeric, onions, and crunchy peanuts."
+    },
+
     // Meals
-    { category: 'meals', name: 'South Indian Thali', price: 150, rating: 4.9, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80' },
-    { category: 'meals', name: 'North Indian Thali', price: 180, rating: 4.8, img: 'https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=400&q=80' },
-    { category: 'meals', name: 'Veg Biryani', price: 120, rating: 4.6, img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80' },
-    { category: 'meals', name: 'Chicken Biryani', price: 220, rating: 4.9, img: 'https://images.unsplash.com/photo-1589302168068-964664d93cb0?auto=format&fit=crop&w=400&q=80' },
-    { category: 'meals', name: 'Paneer Butter Masala', price: 160, rating: 4.7, img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc0?auto=format&fit=crop&w=400&q=80' },
-    { category: 'meals', name: 'Mutton Curry', price: 280, rating: 4.8, img: 'https://images.unsplash.com/photo-1565557613262-b91c784ac5ff?auto=format&fit=crop&w=400&q=80' },
-    { category: 'meals', name: 'Fish Curry Meal', price: 250, rating: 4.6, img: 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=400&q=80' },
+    {
+        category: 'meals', name: 'South Indian Thali', price: 150, rating: 4.9, img: 'https://images.unsplash.com/photo-1546833999-b9f581a1996d?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 - 10 minutes", ingredients: "Steamed rice, dal, rasam, 2 veg curries, curd, papad, pickle.", preparation: "A wholesome traditional platter featuring a balanced mix of spicy, savory, and soothing dishes."
+    },
+    {
+        category: 'meals', name: 'North Indian Thali', price: 180, rating: 4.8, img: 'https://images.unsplash.com/photo-1628294895950-9805252327bc?auto=format&fit=crop&w=400&q=80',
+        prepTime: "10 - 15 minutes", ingredients: "Roti/Naan, Paneer Butter Masala, Dal Makhani, Jeera Rice, Raita.", preparation: "A rich, grand feast of North Indian delicacies showcasing creamy gravies and fresh breads."
+    },
+    {
+        category: 'meals', name: 'Veg Biryani', price: 120, rating: 4.6, img: 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=400&q=80',
+        prepTime: "20 - 25 minutes", ingredients: "Basmati rice, mixed vegetable chunks, biryani masala, saffron, mint.", preparation: "Fragrant long-grain rice slow-cooked with spiced vegetables and aromatic herbs in a sealed pot."
+    },
+    {
+        category: 'meals', name: 'Chicken Biryani', price: 220, rating: 4.9, img: 'https://images.unsplash.com/photo-1589302168068-964664d93cb0?auto=format&fit=crop&w=400&q=80',
+        prepTime: "25 - 30 minutes", ingredients: "Basmati rice, marinated chicken, yogurt, whole spices, fried onions.", preparation: "Authentic Dum Biryani, layering heavily marinated meat and partially cooked rice under a tight seal."
+    },
+    {
+        category: 'meals', name: 'Paneer Butter Masala', price: 160, rating: 4.7, img: 'https://images.unsplash.com/photo-1631452180519-c014fe946bc0?auto=format&fit=crop&w=400&q=80',
+        prepTime: "15 - 20 minutes", ingredients: "Cottage cheese cubes, tomatoes, cashews, butter, fresh cream.", preparation: "Soft paneer cubes simmered in a luscious, sweet, and slightly spicy tomato-cashew gravy."
+    },
+    {
+        category: 'meals', name: 'Mutton Curry', price: 280, rating: 4.8, img: 'https://images.unsplash.com/photo-1565557613262-b91c784ac5ff?auto=format&fit=crop&w=400&q=80',
+        prepTime: "30 - 35 minutes", ingredients: "Tender mutton pieces, caramelized onions, tomatoes, ginger-garlic paste, meat masala.", preparation: "Rich, slow-cooked meat stew where the mutton absorbs the fiery blend of roasted spices."
+    },
+    {
+        category: 'meals', name: 'Fish Curry Meal', price: 250, rating: 4.6, img: 'https://images.unsplash.com/photo-1559847844-5315695dadae?auto=format&fit=crop&w=400&q=80',
+        prepTime: "20 - 25 minutes", ingredients: "Fresh regional fish, tamarind extract, coconut milk, curry leaves, red chili powder.", preparation: "A tangy and spicy coastal-style fish curry served over a bed of warm steamed rice."
+    },
+
     // Starters 
-    { category: 'starters', name: 'Paneer Tikka', price: 180, rating: 4.8, img: 'https://images.unsplash.com/photo-1599487405705-8eb0c50add98?auto=format&fit=crop&w=400&q=80' },
-    { category: 'starters', name: 'Chicken 65', price: 200, rating: 4.7, img: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=400&q=80' },
-    { category: 'starters', name: 'Chilli Prawns', price: 280, rating: 4.6, img: 'https://images.unsplash.com/photo-1565557613262-b91c784ac5ff?auto=format&fit=crop&w=400&q=80' },
-    { category: 'starters', name: 'Veg Manchurian', price: 140, rating: 4.5, img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=80' },
-    { category: 'starters', name: 'Gobi 65', price: 130, rating: 4.4, img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=80' },
-    { category: 'starters', name: 'Mutton Kebabs', price: 300, rating: 4.9, img: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=400&q=80' },
-    { category: 'starters', name: 'Spring Rolls', price: 120, rating: 4.3, img: 'https://images.unsplash.com/photo-1542382156909-924083701bea?auto=format&fit=crop&w=400&q=80' },
+    {
+        category: 'starters', name: 'Paneer Tikka', price: 180, rating: 4.8, img: 'https://images.unsplash.com/photo-1599487405705-8eb0c50add98?auto=format&fit=crop&w=400&q=80',
+        prepTime: "15 - 20 minutes", ingredients: "Paneer, bell peppers, onions, yogurt marinade, tandoori masala.", preparation: "Chunks of paneer marinated in spiced yogurt, skewered, and charred to smoky perfection in a tandoor."
+    },
+    {
+        category: 'starters', name: 'Chicken 65', price: 200, rating: 4.7, img: 'https://images.unsplash.com/photo-1610057099443-fde8c4d50f91?auto=format&fit=crop&w=400&q=80',
+        prepTime: "15 - 20 minutes", ingredients: "Boneless chicken, red chilies, curry leaves, garlic, rice flour.", preparation: "Spicy, deep-fried chicken bites coated with a fiery, iconic red sauce and crispy curry leaves."
+    },
+    {
+        category: 'starters', name: 'Chilli Prawns', price: 280, rating: 4.6, img: 'https://images.unsplash.com/photo-1565557613262-b91c784ac5ff?auto=format&fit=crop&w=400&q=80',
+        prepTime: "12 - 15 minutes", ingredients: "Fresh prawns, soy sauce, green chilies, bell peppers, spring onions.", preparation: "Juicy prawns stir-fried in a hot and sweet dark soy glaze with crunchy veggies."
+    },
+    {
+        category: 'starters', name: 'Veg Manchurian', price: 140, rating: 4.5, img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=80',
+        prepTime: "15 - 20 minutes", ingredients: "Grated cabbage, carrots, soy sauce, garlic, ginger, cornstarch.", preparation: "Fried vegetable dumplings tossed in a savory, umami-rich sticky soy and garlic sauce."
+    },
+    {
+        category: 'starters', name: 'Gobi 65', price: 130, rating: 4.4, img: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&w=400&q=80',
+        prepTime: "15 - 18 minutes", ingredients: "Cauliflower florets, Kashmiri chili powder, garlic paste, rice flour.", preparation: "Crispy, deep-fried cauliflower tossed with a spicy, tangy dry coating."
+    },
+    {
+        category: 'starters', name: 'Mutton Kebabs', price: 300, rating: 4.9, img: 'https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=400&q=80',
+        prepTime: "20 - 25 minutes", ingredients: "Minced mutton, roasted gram flour, mint leaves, green chilies, garam masala.", preparation: "Highly spiced minced meat shaped onto skewers and grilled directly over hot coals."
+    },
+    {
+        category: 'starters', name: 'Spring Rolls', price: 120, rating: 4.3, img: 'https://images.unsplash.com/photo-1542382156909-924083701bea?auto=format&fit=crop&w=400&q=80',
+        prepTime: "10 - 15 minutes", ingredients: "Thin pastry sheets, julienne vegetables, glass noodles, soy sauce.", preparation: "Crispy fried rolls filled with a hot, savory, and delicately crunchy vegetable mix."
+    },
+
     // Drinks / Sweets
-    { category: 'sweetDrinks', name: 'Mango Lassi', price: 80, rating: 4.8, img: 'https://images.unsplash.com/photo-1572490122747-3968b75f5b5b?auto=format&fit=crop&w=400&q=80' },
-    { category: 'sweetDrinks', name: 'Gulab Jamun', price: 60, rating: 4.9, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80' },
-    { category: 'sweetDrinks', name: 'Rasmalai', price: 90, rating: 4.8, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80' },
-    { category: 'sweetDrinks', name: 'Cold Coffee', price: 110, rating: 4.6, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=400&q=80' },
-    { category: 'sweetDrinks', name: 'Lemon Soda', price: 50, rating: 4.5, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80' },
-    { category: 'sweetDrinks', name: 'Ice Cream Sundae', price: 140, rating: 4.7, img: 'https://images.unsplash.com/photo-1553177595-4de2bb0842b9?auto=format&fit=crop&w=400&q=80' },
-    { category: 'sweetDrinks', name: 'Virgin Mojito', price: 120, rating: 4.6, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80' },
+    {
+        category: 'sweetDrinks', name: 'Mango Lassi', price: 80, rating: 4.8, img: 'https://images.unsplash.com/photo-1572490122747-3968b75f5b5b?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 minutes", ingredients: "Fresh mango pulp, chilled yogurt, sugar, cardamom, pistachio topping.", preparation: "Blended into a thick, creamy, sweet yogurt drink served chilled."
+    },
+    {
+        category: 'sweetDrinks', name: 'Gulab Jamun', price: 60, rating: 4.9, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 minutes", ingredients: "Khoya (milk solids), sugar syrup, rose water, cardamom powder.", preparation: "Soft, deep-fried milk dumplings soaked overnight in a warm, fragrant sugar syrup."
+    },
+    {
+        category: 'sweetDrinks', name: 'Rasmalai', price: 90, rating: 4.8, img: 'https://images.unsplash.com/photo-1589301760014-d929f39ce9b1?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 - 10 minutes", ingredients: "Chenna (cottage cheese), thickened milk, saffron strands, chopped almonds.", preparation: "Spongy cottage cheese discs simmering in sweetened, saffron-infused thickened milk."
+    },
+    {
+        category: 'sweetDrinks', name: 'Cold Coffee', price: 110, rating: 4.6, img: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 minutes", ingredients: "Coffee decoction, cold milk, sugar, vanilla ice cream scoop, chocolate syrup.", preparation: "Frothy, blended iced coffee topped with rich vanilla ice cream and chocolate drizzle."
+    },
+    {
+        category: 'sweetDrinks', name: 'Lemon Soda', price: 50, rating: 4.5, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 minutes", ingredients: "Fresh lemon juice, sparkling water, sugar syrup, mint leaves, chaat masala.", preparation: "A fizzy and refreshing citrus drink with a distinct sweet and tangy punch."
+    },
+    {
+        category: 'sweetDrinks', name: 'Ice Cream Sundae', price: 140, rating: 4.7, img: 'https://images.unsplash.com/photo-1553177595-4de2bb0842b9?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 - 8 minutes", ingredients: "Multi-flavor ice cream scopes, chocolate fudge, nuts, cherry, whipped cream.", preparation: "A gorgeous dessert tower layered with syrups, toppings, and clouds of whipped cream."
+    },
+    {
+        category: 'sweetDrinks', name: 'Virgin Mojito', price: 120, rating: 4.6, img: 'https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80',
+        prepTime: "5 minutes", ingredients: "Muddled mint, lime wedges, sprite/soda, crushed ice.", preparation: "A vibrant, non-alcoholic cooler bursting with fresh minty and zesty lime flavors."
+    },
 ].map((item, idx) => ({ ...item, id: `${item.category}-${idx}` }));
 
 
@@ -108,7 +195,10 @@ router.post('/', upload.single('imageFile'), async (req, res) => {
             name,
             price: Number(price),
             rating: Number(rating) || 5.0,
-            img: finalImage
+            img: finalImage,
+            prepTime: req.body.prepTime || "15 - 20 minutes",
+            ingredients: req.body.ingredients || "Farm-fresh ingredients and premium spices.",
+            preparation: req.body.preparation || "Cooked to perfection using traditional home-style techniques."
         });
 
         await newItem.save();
