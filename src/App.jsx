@@ -162,6 +162,10 @@ function Card({ item, onAddToCart }) {
   const [success, setSuccess] = useState(false);
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const isNonVeg = /chicken|mutton|fish|prawn|egg|meat/i.test(item.name);
+  const badgeClass = isNonVeg ? 'non-veg-badge' : 'veg-badge';
+  const badgeText = isNonVeg ? '🍗 Non-Veg' : '🌱 Pure Veg';
+
   const handleOrder = () => {
     const qty = parseInt(quantity, 10);
     if (!quantity || isNaN(qty)) {
@@ -186,17 +190,17 @@ function Card({ item, onAddToCart }) {
       <div className="card-inner">
         {/* Front of Card */}
         <div className="card-front">
-          <div className="image-container">
-            <div className="info-icon" onClick={() => setIsFlipped(true)}>ℹ️</div>
+          <div className="image-container" onClick={() => setIsFlipped(true)} style={{ cursor: 'pointer' }}>
+            <div className="flip-hint">Tap for info</div>
             <img src={item.img} alt={item.name} />
             <span className="rating">⭐ {item.rating}</span>
           </div>
           <div className="card-info">
             <div className="card-header">
               <h3>{item.name}</h3>
-              <span className="veg-badge">🌱 Pure Veg</span>
+              <span className={badgeClass}>{badgeText}</span>
             </div>
-            <p className="card-desc">Authentic Indian flavors prepared with rich spices and fresh ingredients.</p>
+            <p className="card-desc">{item.ingredients || "Authentic Indian flavors prepared with rich spices and fresh ingredients."}</p>
 
             <div className="price-row">
               <p className="price">₹{item.price}</p>
@@ -264,6 +268,10 @@ function AdminCard({ item, category, onUpdate, onDelete }) {
   const [isEditing, setIsEditing] = useState(false);
   const [newPrice, setNewPrice] = useState(item.price);
 
+  const isNonVeg = /chicken|mutton|fish|prawn|egg|meat/i.test(item.name);
+  const badgeClass = isNonVeg ? 'non-veg-badge' : 'veg-badge';
+  const badgeText = isNonVeg ? '🍗 Non-Veg' : '🌱 Pure Veg';
+
   const handleUpdate = () => {
     if (newPrice && !isNaN(Number(newPrice)) && Number(newPrice) > 0) {
       onUpdate(item.id, category, Number(newPrice));
@@ -280,9 +288,9 @@ function AdminCard({ item, category, onUpdate, onDelete }) {
       <div className="card-info">
         <div className="card-header">
           <h3>{item.name}</h3>
-          <span className="veg-badge">🌱 Pure Veg</span>
+          <span className={badgeClass}>{badgeText}</span>
         </div>
-        <p className="card-desc">Authentic Indian flavors prepared with rich spices and fresh ingredients.</p>
+        <p className="card-desc">{item.preparation || item.ingredients || "Authentic Indian flavors prepared with rich spices and fresh ingredients."}</p>
 
         <div className="price-row">
           {isEditing ? (
