@@ -1,24 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-  --primary: #10b981;
-  --primary-dark: #064e3b;
-  --secondary: #34d399;
-  --primary-light: #d1fae5;
-  --primary-glow: rgba(16, 185, 129, 0.15);
-  --page-bg: #f0fdf4;
-  /* A very soft, elegant pale green */
-  --surface: #ffffff;
-  --surface-border: #dcfce7;
-  --text-primary: #064e3b;
-  /* Darkest green for primary text to ensure contrast */
-  --text-secondary: #047857;
-  /* Medium-dark green for secondary text */
+  --primary: #f59e0b;
+  /* Vibrant Amber */
+  --primary-dark: #d97706;
+  --secondary: #fbbf24;
+  --primary-light: rgba(245, 158, 11, 0.15);
+  --primary-glow: rgba(245, 158, 11, 0.4);
+
+  --page-bg: #0f172a;
+  /* Deep elegant slate */
+  --surface: rgba(30, 41, 59, 0.6);
+  /* Glass surface */
+  --surface-border: rgba(255, 255, 255, 0.08);
+
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+
   --danger: #ef4444;
   --success: #10b981;
-  --glass-bg: rgba(255, 255, 255, 0.9);
-  --glass-border: rgba(226, 232, 240, 0.8);
-  --input-bg: #f1f5f9;
+  --glass-bg: rgba(15, 23, 42, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --input-bg: rgba(15, 23, 42, 0.7);
 }
 
 * {
@@ -29,7 +32,12 @@
 
 body {
   font-family: 'Outfit', system-ui, -apple-system, sans-serif;
-  background: var(--page-bg);
+  background-color: var(--page-bg);
+  background-image:
+    radial-gradient(at 10% 20%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
+    radial-gradient(at 90% 80%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+    radial-gradient(at 80% 10%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
+  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
@@ -42,11 +50,11 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--surface);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 10px;
 }
 
