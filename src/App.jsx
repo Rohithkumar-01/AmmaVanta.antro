@@ -176,8 +176,15 @@ function Card({ item, onAddToCart }) {
         <span className="rating">⭐ {item.rating}</span>
       </div>
       <div className="card-info">
-        <h3>{item.name}</h3>
-        <p className="price">₹{item.price}</p>
+        <div className="card-header">
+          <h3>{item.name}</h3>
+          <span className="veg-badge">🌱 Pure Veg</span>
+        </div>
+        <p className="card-desc">Authentic Indian flavors prepared with rich spices and fresh ingredients.</p>
+
+        <div className="price-row">
+          <p className="price">₹{item.price}</p>
+        </div>
 
         <div className="order-section">
           <input
@@ -233,23 +240,30 @@ function AdminCard({ item, category, onUpdate, onDelete }) {
         <span className="rating">⭐ {item.rating}</span>
       </div>
       <div className="card-info">
-        <h3>{item.name}</h3>
-        {isEditing ? (
-          <div className="edit-price-section" style={{ display: 'flex', gap: '5px', alignItems: 'center', marginBottom: '10px' }}>
-            <span style={{ fontWeight: 'bold' }}>₹</span>
-            <input
-              type="number"
-              value={newPrice}
-              onChange={(e) => setNewPrice(e.target.value)}
-              placeholder="Price"
-              style={{ width: '70px', padding: '0.2rem' }}
-            />
-            <button onClick={handleUpdate} className="btn btn-primary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>Save</button>
-            <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>X</button>
-          </div>
-        ) : (
-          <p className="price">₹{item.price}</p>
-        )}
+        <div className="card-header">
+          <h3>{item.name}</h3>
+          <span className="veg-badge">🌱 Pure Veg</span>
+        </div>
+        <p className="card-desc">Authentic Indian flavors prepared with rich spices and fresh ingredients.</p>
+
+        <div className="price-row">
+          {isEditing ? (
+            <div className="edit-price-section" style={{ display: 'flex', gap: '5px', alignItems: 'center', marginBottom: '10px' }}>
+              <span style={{ fontWeight: 'bold' }}>₹</span>
+              <input
+                type="number"
+                value={newPrice}
+                onChange={(e) => setNewPrice(e.target.value)}
+                placeholder="Price"
+                style={{ width: '70px', padding: '0.2rem' }}
+              />
+              <button onClick={handleUpdate} className="btn btn-primary" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>Save</button>
+              <button onClick={() => setIsEditing(false)} className="btn btn-outline" style={{ padding: '0.3rem 0.6rem', fontSize: '0.8rem' }}>X</button>
+            </div>
+          ) : (
+            <p className="price">₹{item.price}</p>
+          )}
+        </div>
 
         {!isEditing && (
           <div className="admin-card-actions" style={{ display: 'flex', gap: '0.5rem', marginTop: '1rem' }}>
