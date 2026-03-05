@@ -149,6 +149,7 @@ function Card({ item, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const handleOrder = () => {
     const qty = parseInt(quantity, 10);
@@ -170,39 +171,65 @@ function Card({ item, onAddToCart }) {
   };
 
   return (
-    <div className="card">
-      <div className="image-container">
-        <img src={item.img} alt={item.name} />
-        <span className="rating">⭐ {item.rating}</span>
-      </div>
-      <div className="card-info">
-        <div className="card-header">
-          <h3>{item.name}</h3>
-          <span className="veg-badge">🌱 Pure Veg</span>
-        </div>
-        <p className="card-desc">Authentic Indian flavors prepared with rich spices and fresh ingredients.</p>
+    <div className={`card ${isFlipped ? 'is-flipped' : ''}`}>
+      <div className="card-inner">
+        {/* Front of Card */}
+        <div className="card-front">
+          <div className="image-container">
+            <div className="info-icon" onClick={() => setIsFlipped(true)}>ℹ️</div>
+            <img src={item.img} alt={item.name} />
+            <span className="rating">⭐ {item.rating}</span>
+          </div>
+          <div className="card-info">
+            <div className="card-header">
+              <h3>{item.name}</h3>
+              <span className="veg-badge">🌱 Pure Veg</span>
+            </div>
+            <p className="card-desc">Authentic Indian flavors prepared with rich spices and fresh ingredients.</p>
 
-        <div className="price-row">
-          <p className="price">₹{item.price}</p>
+            <div className="price-row">
+              <p className="price">₹{item.price}</p>
+            </div>
+
+            <div className="order-section">
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => {
+                  setQuantity(e.target.value);
+                  setError("");
+                  setSuccess(false);
+                }}
+                placeholder="Qty"
+                className={error ? 'input-error' : ''}
+              />
+              <button onClick={handleOrder}>Add</button>
+            </div>
+
+            {error && <div className="error-message">{error}</div>}
+            {success && <div className="success-message">Added to cart!</div>}
+          </div>
         </div>
 
-        <div className="order-section">
-          <input
-            type="number"
-            value={quantity}
-            onChange={(e) => {
-              setQuantity(e.target.value);
-              setError("");
-              setSuccess(false);
-            }}
-            placeholder="Qty"
-            className={error ? 'input-error' : ''}
-          />
-          <button onClick={handleOrder}>Add</button>
+        {/* Back of Card */}
+        <div className="card-back">
+          <div className="card-back-title">{item.name}</div>
+          <div className="info-section">
+            <div className="info-item">
+              <h4>Prep Time</h4>
+              <p>{item.prepTime || "15 - 20 minutes"}</p>
+            </div>
+            <div className="info-item">
+              <h4>Ingredients</h4>
+              <p>{item.ingredients || "Farm-fresh vegetables, premium grounding spices, aromatic herbs, and healthy cooking oil."}</p>
+            </div>
+            <div className="info-item">
+              <h4>Preparation</h4>
+              <p>{item.preparation || "Cooked slow to perfection using traditional home-style Indian culinary techniques for authentic flavor."}</p>
+            </div>
+          </div>
+          <button className="flip-btn" onClick={() => setIsFlipped(false)}>← Back to details</button>
         </div>
-
-        {error && <div className="error-message">{error}</div>}
-        {success && <div className="success-message">Added to cart!</div>}
       </div>
     </div>
   );

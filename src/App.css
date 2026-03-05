@@ -118,24 +118,144 @@
 /* ================== Food Cards (Glassmorphism Dark) ================== */
 .card {
   flex: 0 0 300px;
+  background: transparent;
+  perspective: 1500px;
+  scroll-snap-align: start;
+  position: relative;
+  display: flex;
+}
+
+.card-inner {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transform-style: preserve-3d;
+}
+
+.card:hover .card-inner {
+  transform: translateY(-8px);
+}
+
+.card.is-flipped .card-inner {
+  transform: rotateY(180deg) translateY(-8px);
+}
+
+.card-front,
+.card-back {
+  grid-area: 1 / 1;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+
   background: var(--surface);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  scroll-snap-align: start;
   border: 1px solid var(--surface-border);
   display: flex;
   flex-direction: column;
-  position: relative;
 }
 
-.card:hover {
-  transform: translateY(-12px) scale(1.02);
+.card:hover .card-front {
   box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 20px var(--primary-glow);
   border-color: rgba(245, 158, 11, 0.5);
+}
+
+.card.is-flipped:hover .card-back {
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6), 0 0 20px var(--primary-glow);
+  border-color: rgba(245, 158, 11, 0.5);
+}
+
+.card-back {
+  transform: rotateY(180deg);
+  padding: 1.5rem;
+  background: rgba(15, 23, 42, 0.95);
+  display: flex;
+  flex-direction: column;
+}
+
+.card-back-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 1rem;
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+  padding-bottom: 0.5rem;
+}
+
+.info-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  flex: 1;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-item h4 {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 0.2rem;
+}
+
+.info-item p {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  line-height: 1.4;
+}
+
+.flip-btn {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  align-self: flex-start;
+  transition: all 0.2s;
+}
+
+.flip-btn:hover {
+  background: var(--primary);
+  color: #000;
+  box-shadow: 0 4px 15px var(--primary-glow);
+}
+
+.info-icon {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  color: #fff;
+  border: 1px solid var(--surface-border);
+  cursor: pointer;
+  z-index: 2;
+  transition: all 0.3s;
+  font-weight: bold;
+}
+
+.info-icon:hover {
+  background: var(--primary);
+  color: #000;
+  transform: scale(1.1);
 }
 
 .image-container {
