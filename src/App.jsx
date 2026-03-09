@@ -227,6 +227,24 @@ function Card({ item, onAddToCart }) {
             <p>{item.ingredients || "Fresh vegetables, ground spices, aromatic herbs, and healthy oils."}</p>
             <h4>Preparation</h4>
             <p>{item.preparation || "Cooked slow to perfection for authentic Indian flavor."}</p>
+
+            <div className="order-section" style={{ marginTop: 'auto', paddingTop: '1rem' }}>
+              <input
+                type="number"
+                value={quantity}
+                onChange={(e) => {
+                  setQuantity(e.target.value);
+                  setError("");
+                  setSuccess(false);
+                }}
+                placeholder="Qty"
+                className={error ? 'input-error' : ''}
+              />
+              <button onClick={handleOrder}>Add to Cart</button>
+            </div>
+            {error && <div className="error-message" style={{ fontSize: '0.8rem' }}>{error}</div>}
+            {success && <div className="success-message" style={{ fontSize: '0.8rem' }}>Added to cart!</div>}
+
           </div>
         </div>
 
