@@ -1,27 +1,24 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
 :root {
-  --primary: #f59e0b;
-  /* Vibrant Amber */
-  --primary-dark: #d97706;
-  --secondary: #fbbf24;
-  --primary-light: rgba(245, 158, 11, 0.15);
-  --primary-glow: rgba(245, 158, 11, 0.4);
+  --primary: #c2410c;
+  --primary-dark: #9a3412;
+  --secondary: #ea580c;
+  --primary-light: #ffedd5;
+  --primary-glow: rgba(194, 65, 12, 0.2);
 
-  --page-bg: #0f172a;
-  /* Deep elegant slate */
-  --surface: rgba(30, 41, 59, 0.6);
-  /* Glass surface */
-  --surface-border: rgba(255, 255, 255, 0.08);
+  --page-bg: #fafaf9;
+  --surface: #ffffff;
+  --surface-border: #e7e5e4;
 
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
+  --text-primary: #1c1917;
+  --text-secondary: #57534e;
 
   --danger: #ef4444;
   --success: #10b981;
-  --glass-bg: rgba(15, 23, 42, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --input-bg: rgba(15, 23, 42, 0.7);
+  --glass-bg: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.05);
+  --input-bg: #ffffff;
 }
 
 * {
@@ -31,17 +28,23 @@
 }
 
 body {
-  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--page-bg);
-  background-image:
-    radial-gradient(at 10% 20%, rgba(245, 158, 11, 0.15) 0px, transparent 50%),
-    radial-gradient(at 90% 80%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
-    radial-gradient(at 80% 10%, rgba(245, 158, 11, 0.05) 0px, transparent 50%);
-  background-attachment: fixed;
   color: var(--text-primary);
   line-height: 1.6;
   min-height: 100vh;
-  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.brand-font {
+  font-family: 'Playfair Display', serif;
 }
 
 ::-webkit-scrollbar {
@@ -54,7 +57,7 @@ body {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.15);
+  background: #d6d3d1;
   border-radius: 10px;
 }
 

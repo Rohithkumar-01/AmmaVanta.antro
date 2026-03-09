@@ -15,11 +15,6 @@ const apiClient = {
     });
     const data = await res.json();
     if (!data.success) throw new Error(data.message || 'Error sending OTP');
-
-    // For local testing without real SMS, alert the OTP so we can test the UI flow
-    if (data.mockOtp) {
-      alert(`[Backend SMS Mock] Your OTP for ${phone} is: ${data.mockOtp}`);
-    }
     return data;
   },
 
@@ -160,7 +155,6 @@ function Card({ item, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-  const [isFlipped, setIsFlipped] = useState(false);
 
   const isNonVeg = /chicken|mutton|fish|prawn|egg|meat/i.test(item.name);
   const badgeClass = isNonVeg ? 'non-veg-badge' : 'veg-badge';
@@ -186,12 +180,10 @@ function Card({ item, onAddToCart }) {
   };
 
   return (
-    <div className={`card ${isFlipped ? 'is-flipped' : ''}`}>
+    <div className="card professional-card">
       <div className="card-inner">
-        {/* Front of Card */}
         <div className="card-front">
-          <div className="image-container" onClick={() => setIsFlipped(true)} style={{ cursor: 'pointer' }}>
-            <div className="info-dot"></div>
+          <div className="image-container">
             <img src={item.img} alt={item.name} />
             <span className="rating">⭐ {item.rating}</span>
           </div>
@@ -200,7 +192,7 @@ function Card({ item, onAddToCart }) {
               <h3>{item.name}</h3>
               <span className={badgeClass}>{badgeText}</span>
             </div>
-            <p className="card-desc">{item.ingredients || "Authentic Indian flavors prepared with rich spices and fresh ingredients."}</p>
+            <p className="card-desc">{item.ingredients || "Authentic Indian flavors prepared with rich spices."}</p>
 
             <div className="price-row">
               <p className="price">₹{item.price}</p>
@@ -224,26 +216,6 @@ function Card({ item, onAddToCart }) {
             {error && <div className="error-message">{error}</div>}
             {success && <div className="success-message">Added to cart!</div>}
           </div>
-        </div>
-
-        {/* Back of Card */}
-        <div className="card-back">
-          <div className="card-back-title">{item.name}</div>
-          <div className="info-section">
-            <div className="info-item">
-              <h4>Prep Time</h4>
-              <p>{item.prepTime || "15 - 20 minutes"}</p>
-            </div>
-            <div className="info-item">
-              <h4>Ingredients</h4>
-              <p>{item.ingredients || "Farm-fresh vegetables, premium grounding spices, aromatic herbs, and healthy cooking oil."}</p>
-            </div>
-            <div className="info-item">
-              <h4>Preparation</h4>
-              <p>{item.preparation || "Cooked slow to perfection using traditional home-style Indian culinary techniques for authentic flavor."}</p>
-            </div>
-          </div>
-          <button className="flip-btn" onClick={() => setIsFlipped(false)}>← Back to details</button>
         </div>
       </div>
     </div>
@@ -341,6 +313,43 @@ function Cart({ cartItems }) {
     );
   }
 
+  const handleCheckout = async () => {
+    const loadRazorpay = () => {
+      return new Promise((resolve) => {
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = () => resolve(true);
+        script.onerror = () => resolve(false);
+        document.body.appendChild(script);
+      });
+    };
+
+    const res = await loadRazorpay();
+    if (!res) {
+      alert("Razorpay SDK failed to load. Please check your connection.");
+      return;
+    }
+
+    const options = {
+      key: "rzp_test_O2o0YIOfZg0BvK", // Mock/Sample test key
+      amount: Math.round(grandTotal * 100), // Amount in paise
+      currency: "INR",
+      name: "AmmaVanta",
+      description: "Restaurant Order",
+      handler: function (response) {
+        navigate('/checkout', { state: { cartItems, totalQuantity, totalPrice, gst, grandTotal, paymentId: response.razorpay_payment_id } });
+      },
+      prefill: {
+        name: "Test Customer",
+        contact: "9876543210"
+      },
+      theme: { color: "#c2410c" }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  };
+
   return (
     <div className="cart-widget">
       <h3>Your Items ({totalQuantity})</h3>
@@ -397,8 +406,8 @@ function Cart({ cartItems }) {
         </div>
       </div>
 
-      <button className="btn btn-primary full-width mt-4" onClick={() => navigate('/checkout', { state: { cartItems, totalQuantity, totalPrice, gst, grandTotal } })}>
-        Place Order • ₹{grandTotal.toFixed(2)}
+      <button className="btn btn-primary full-width mt-4" onClick={handleCheckout}>
+        Pay with Razorpay • ₹{grandTotal.toFixed(2)}
       </button>
     </div>
   );
@@ -692,8 +701,12 @@ function Register() {
 
     setLoading(true);
     try {
-      await apiClient.sendOtp(formData.phone);
+      const data = await apiClient.sendOtp(formData.phone);
       setStep(2);
+      // Auto-fill mock OTP for smooth user experience
+      if (data.mockOtp) {
+        setFormData(prev => ({ ...prev, otp: data.mockOtp }));
+      }
     } catch (err) {
       setError(err.message);
     } finally {

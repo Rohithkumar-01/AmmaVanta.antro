@@ -4,7 +4,7 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 
 router.post('/generate-info', async (req, res) => {
     try {
-        const { name, category } = req.body;
+        const { name, category, complexity } = req.body;
         if (!name) {
             return res.status(400).json({ success: false, message: "Item name is required for AI generation" });
         }
@@ -17,12 +17,20 @@ router.post('/generate-info', async (req, res) => {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+        let languageInstruction = "Use basic, simple general words that anyone can easily understand.";
+        if (complexity === 'intermediate') {
+            languageInstruction = "Use standard, balanced culinary terms.";
+        } else if (complexity === 'advanced') {
+            languageInstruction = "Use high-end, sophisticated English and advanced culinary vocabulary to sound very premium.";
+        }
+
         const prompt = `You are a professional culinary AI assistant for an Indian restaurant named AmmaVanta. 
 A user wants to add a new food item to their menu. The category is "${category || 'general food'}" and the item name is "${name}".
+${languageInstruction}
 Please provide the following details about this dish:
 1. Preparation time (e.g., "15 - 20 minutes")
 2. Ingredients used (e.g., "Basmati rice, fresh paneer, tomatoes...")
-3. Preparation method. Explain beautifully how it is prepared (e.g., "Slow cooked to perfection...").
+3. Preparation method. Explain how it is prepared (e.g., "Slow cooked to perfection..."). Ensure the length is short and concise so it fits on a small card.
 
 Return ONLY a valid JSON string without markdown blocks, format EXACTLY like this:
 {
