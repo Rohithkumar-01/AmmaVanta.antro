@@ -297,6 +297,7 @@ function AdminCard({ item, category, onUpdate, onDelete }) {
 // ======================== Protected Routes =========================
 
 function Cart({ cartItems }) {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cartItems.reduce((acc, item) => acc + item.quantity * item.price, 0);
@@ -314,6 +315,20 @@ function Cart({ cartItems }) {
   }
 
   const handleCheckout = async () => {
+    // -------------------------------------------------------------
+    // RAZORPAY CONFIGURATION
+    // Replace the string below with your actual Razorpay Test Key ID
+    // You can get it from: Dashboard -> Account & Settings -> API Keys
+    // -------------------------------------------------------------
+    const RAZORPAY_KEY = "rzp_test_YOUR_KEY_HERE";
+
+    // If still using the placeholder, simulate a successful payment to avoid the "Something went wrong" Razorpay error
+    if (RAZORPAY_KEY === "rzp_test_YOUR_KEY_HERE" || RAZORPAY_KEY.includes("O2o0YIOfZg0BvK")) {
+      alert("Note: To see the actual Razorpay checkout window, you need to enter your own Test Key ID in App.jsx (search for RAZORPAY_KEY).\n\nFor now, we will simulate a successful payment!");
+      navigate('/checkout', { state: { cartItems, totalQuantity, totalPrice, gst, grandTotal, paymentId: "pay_mock_" + Math.floor(Math.random() * 1000000) } });
+      return;
+    }
+
     const loadRazorpay = () => {
       return new Promise((resolve) => {
         const script = document.createElement("script");
@@ -331,7 +346,7 @@ function Cart({ cartItems }) {
     }
 
     const options = {
-      key: "rzp_test_O2o0YIOfZg0BvK", // Mock/Sample test key
+      key: RAZORPAY_KEY,
       amount: Math.round(grandTotal * 100), // Amount in paise
       currency: "INR",
       name: "AmmaVanta",
@@ -340,13 +355,16 @@ function Cart({ cartItems }) {
         navigate('/checkout', { state: { cartItems, totalQuantity, totalPrice, gst, grandTotal, paymentId: response.razorpay_payment_id } });
       },
       prefill: {
-        name: "Test Customer",
+        name: user ? user.name || user.username : "Test Customer",
         contact: "9876543210"
       },
       theme: { color: "#c2410c" }
     };
 
     const rzp = new window.Razorpay(options);
+    rzp.on('payment.failed', function (response) {
+      alert("Payment Failed: " + response.error.description);
+    });
     rzp.open();
   };
 
