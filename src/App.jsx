@@ -217,6 +217,19 @@ function Card({ item, onAddToCart }) {
             {success && <div className="success-message">Added to cart!</div>}
           </div>
         </div>
+
+        {/* Desktop Card Back for Ingredients & Prep */}
+        <div className="card-back">
+          <div className="card-back-content">
+            <h4>Prep Time</h4>
+            <p>{item.prepTime || "15 - 20 minutes"}</p>
+            <h4>Ingredients</h4>
+            <p>{item.ingredients || "Fresh vegetables, ground spices, aromatic herbs, and healthy oils."}</p>
+            <h4>Preparation</h4>
+            <p>{item.preparation || "Cooked slow to perfection for authentic Indian flavor."}</p>
+          </div>
+        </div>
+
       </div>
     </div>
   );
