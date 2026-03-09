@@ -155,6 +155,7 @@ function Card({ item, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isFlipped, setIsFlipped] = useState(false);
 
   const isNonVeg = /chicken|mutton|fish|prawn|egg|meat/i.test(item.name);
   const badgeClass = isNonVeg ? 'non-veg-badge' : 'veg-badge';
@@ -180,10 +181,13 @@ function Card({ item, onAddToCart }) {
   };
 
   return (
-    <div className="card professional-card">
+    <div className={`card professional-card ${isFlipped ? 'flipped' : ''}`}>
       <div className="card-inner">
         <div className="card-front">
-          <div className="image-container">
+          <div className="image-container" onClick={() => setIsFlipped(!isFlipped)} title="Click image to see preparation & details!">
+            <div className="rating" style={{ top: '10px', left: '10px', right: 'auto', backgroundColor: 'rgba(0,0,0,0.7)', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <span style={{ fontSize: '1rem' }}>ℹ️</span> View Details
+            </div>
             <img src={item.img} alt={item.name} />
             <span className="rating">⭐ {item.rating}</span>
           </div>

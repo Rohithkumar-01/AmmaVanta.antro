@@ -104,7 +104,23 @@
 }
 
 @media (min-width: 769px) {
-  .professional-card:hover .card-inner {
+
+  .professional-card .image-container:hover~.card-inner,
+  .professional-card .card-inner:hover {
+    transform: none;
+    /* Disabled full-card hover flip if it existed */
+  }
+
+  /* We'll flip the card ONLY when the image is hovered */
+  .professional-card.can-flip:hover .card-inner {
+    transform: none;
+  }
+
+  .professional-card .image-container {
+    cursor: pointer;
+  }
+
+  .professional-card.flipped .card-inner {
     transform: rotateY(180deg);
   }
 }
